@@ -485,6 +485,18 @@ void export_core(pybind11::module& m) {
 	        "publish",
 	        [](Task& self, const SolutionBasePtr& solution) { self.introspection().publishSolution(*solution); },
 	        "solution"_a, "Publish the given solution to the ROS topic ``solution``")
+		.def("fillMessage", [](Task& self, const SolutionBasePtr& solution) {
+				moveit_task_constructor_msgs::Solution msg;
+				solution->fillMessage(msg, &self.introspection());
+		        return msg;
+			},
+			"Convert to the ROS message ``Solution` with introspection`")
+		.def("fillTaskDescription", [](Task& self) {
+				moveit_task_constructor_msgs::TaskDescription msg;
+				self.introspection().fillTaskDescription(msg);
+		        return msg;
+			},
+			"Convert to the ROS message ``TaskDescription` with introspection`")
 	    .def_static(
 	        "execute",
 	        [](const SolutionBasePtr& solution) {
